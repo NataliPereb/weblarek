@@ -1,37 +1,37 @@
 import { IProduct } from "../../types/index";
 
 export class BasketModel {
-    private _items: IProduct[];
+    private items: IProduct[];
 
     constructor() {
-        this._items = [];
+        this.items = [];
     }
 
     getItems(): IProduct[] {
-        return this._items;
+        return this.items;
     }
 
     addItem(product: IProduct): void {
-        this._items.push(product);
+        this.items.push(product);
     }
 
     removeItem(id: string): void {
-        this._items = this._items.filter((item) => item.id !== id);
+        this.items = this.items.filter((item) => item.id !== id);
     }
 
     clear(): void {
-        this._items.length = 0;
+        this.items.length = 0;
     }
 
     getTotalPrice(): number {
-        return this._items.reduce((sum, item) => sum + (item.price ?? 0), 0);
+        return this.items.reduce((sum, item) => sum + (item.price ?? 0), 0);
     }
 
     getItemCount(): number {
-        return this._items.length;
+        return this.items.length;
     }
 
     hasItem(id: string): boolean {
-        return this._items.some((item) => item.id === id);
+        return this.items.some((item) => item.id === id);
     }
 }

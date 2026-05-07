@@ -5,11 +5,12 @@ import { CatalogModel } from "./components/Models/CatalogModel";
 import { AppApi } from "./components/AppApi/AppApi";
 import { Api } from "./components/base/Api";
 import { apiProducts } from "./utils/data";
+import { API_URL } from "./utils/constants";
 
 const catalog = new CatalogModel();
 const basket = new BasketModel();
 const buyer = new BuyerModel();
-const api = new Api("http://localhost:3000/api/weblarek");
+const api = new Api(API_URL);
 const appApi = new AppApi(api);
 
 catalog.setItems(apiProducts.items);
@@ -45,8 +46,12 @@ console.log("После clear getData:", buyer.getData());
 console.log("validateAll (пусто):", buyer.validateAll());
 
 async function testApi() {
-    const productsResponse = await appApi.getProducts();
-    console.log("getProducts total:", productsResponse.total);
-    console.log("getProducts items[0]:", productsResponse.items[0]);
+    try {
+        const productsResponse = await appApi.getProducts();
+        console.log("getProducts total:", productsResponse.total);
+        console.log("getProducts items[0]:", productsResponse.items[0]);
+    } catch (error) {
+        console.error("Ошибка при запросе к серверу:", error);
+    }
 }
 testApi();

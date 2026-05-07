@@ -1,10 +1,10 @@
 import { IOrder, IOrderResult, IProductsResponse } from "../../types/index";
-import { Api } from "../../components/base/Api";
+import { IApi } from "../../types/index";
 
 export class AppApi {
-    private _baseApi: Api;
+    private _baseApi: IApi;
 
-    constructor(baseApi: Api) {
+    constructor(baseApi: IApi) {
         this._baseApi = baseApi;
     }
 

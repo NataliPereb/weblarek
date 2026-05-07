@@ -1,4 +1,4 @@
-import { TPayment, IBuyer } from "../../types/index";
+import { TPayment, IBuyer, TBuyerErrors } from "../../types/index";
 
 export class BuyerModel {
     private _payment: TPayment | null;
@@ -13,7 +13,7 @@ export class BuyerModel {
         this._payment = null;
     }
 
-    setField(field: keyof IBuyer, value: string | TPayment): void {
+    setField(field: keyof IBuyer, value: string): void {
         if (field === "payment") {
             this._payment = value as TPayment;
         } else if (field === "email") {
@@ -41,18 +41,8 @@ export class BuyerModel {
         this._email = "";
     }
 
-    validateAll(): {
-        payment?: string;
-        email?: string;
-        phone?: string;
-        address?: string;
-    } {
-        const errors: {
-            payment?: string;
-            email?: string;
-            phone?: string;
-            address?: string;
-        } = {};
+    validateAll(): TBuyerErrors {
+        const errors: TBuyerErrors = {};
 
         if (!this._payment) {
             errors.payment = "Не выбран способ оплаты";

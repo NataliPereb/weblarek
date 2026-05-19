@@ -1,16 +1,18 @@
 import { TPayment, IBuyer, TBuyerErrors } from "../../types/index";
+import { EventEmitter } from "../base/Events";
 
 export class BuyerModel {
     private _payment: TPayment | null;
     private _address: string;
     private _phone: string;
     private _email: string;
-
-    constructor() {
+    protected events: EventEmitter;
+    constructor(events: EventEmitter) {
         this._address = "";
         this._email = "";
         this._phone = "";
         this._payment = null;
+        this.events = events;
     }
 
     setField(field: keyof IBuyer, value: string): void {
@@ -23,6 +25,7 @@ export class BuyerModel {
         } else if (field === "phone") {
             this._phone = value as string;
         }
+        this.events.emit("buyerUpdate", this.getData());
     }
 
     getData(): IBuyer {
@@ -39,6 +42,7 @@ export class BuyerModel {
         this._address = "";
         this._phone = "";
         this._email = "";
+        this.events.emit("buyerUpdate", this.getData());
     }
 
     validateAll(): TBuyerErrors {

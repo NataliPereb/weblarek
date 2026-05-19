@@ -1,5 +1,6 @@
 import { IOrder, IOrderResult, IProductsResponse } from "../../types/index";
 import { IApi } from "../../types/index";
+import { CDN_URL } from "../../utils/constants";
 
 export class AppApi {
     private _baseApi: IApi;
@@ -8,12 +9,15 @@ export class AppApi {
         this._baseApi = baseApi;
     }
 
-    // GET /product/ — получить список товаров
     getProducts(): Promise<IProductsResponse> {
-        return this._baseApi.get<IProductsResponse>("/product/");
+        return this._baseApi.get<IProductsResponse>("/product/").then((res) => {
+            res.items.forEach((item) => {
+                item.image = CDN_URL + item.image;
+            });
+            return res;
+        });
     }
 
-    // POST /order — отправить заказ
     postOrder(order: IOrder): Promise<IOrderResult> {
         return this._baseApi.post<IOrderResult>("/order", order);
     }

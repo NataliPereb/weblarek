@@ -32,6 +32,10 @@ export interface IOrder extends IBuyer {
     items: string[];
 }
 
+export type IOrderForm = Pick<IBuyer, "payment" | "address">;
+
+export type IContactsForm = Pick<IBuyer, "email" | "phone">;
+
 export interface IOrderResult {
     id: string;
     total: number;

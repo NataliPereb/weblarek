@@ -14,7 +14,7 @@ export class CatalogModel {
 
     setItems(products: IProduct[]): void {
         this.items = products;
-        this.events.emit("catalogUpdate", this.items);
+        this.events.emit("catalogUpdate");
     }
 
     getItems(): IProduct[] {
@@ -25,9 +25,12 @@ export class CatalogModel {
         return this.items.find((item) => item.id === id);
     }
 
-    setSelectedProduct(product: IProduct): void {
-        this.selectedProduct = product;
-        this.events.emit("selectedProductUpdate", product);
+    setSelectedProduct(id: string): void {
+        const product = this.getProduct(id);
+        if (product) {
+            this.selectedProduct = product;
+            this.events.emit("selectedProductUpdate");
+        }
     }
 
     getSelectedProduct(): IProduct | null {

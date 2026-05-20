@@ -1,6 +1,8 @@
-import { Card } from "../base/Card";
+import { Card } from "./base/Card";
 import { categoryMap } from "../../utils/constants";
 import { IProduct } from "../../types/index";
+import { ensureElement } from "../../utils/utils";
+import { EventEmitter } from "../base/Events";
 
 export class CardPreview extends Card<IProduct> {
     protected categoryElement: HTMLElement;
@@ -8,20 +10,25 @@ export class CardPreview extends Card<IProduct> {
     protected descriptionElement: HTMLElement;
     protected buttonElement: HTMLButtonElement;
 
-    constructor(container: HTMLElement) {
+    constructor(
+        container: HTMLElement,
+        protected events: EventEmitter,
+    ) {
         super(container);
-        this.categoryElement = container.querySelector(
-            ".card__category",
-        ) as HTMLElement;
-        this.imageElement = container.querySelector(
+        this.categoryElement = ensureElement(".card__category", container);
+        this.imageElement = ensureElement(
             ".card__image",
+            container,
         ) as HTMLImageElement;
-        this.descriptionElement = container.querySelector(
-            ".card__text",
-        ) as HTMLElement;
-        this.buttonElement = container.querySelector(
+        this.descriptionElement = ensureElement(".card__text", container);
+        this.buttonElement = ensureElement(
             ".button",
+            container,
         ) as HTMLButtonElement;
+
+        this.buttonElement.addEventListener("click", () => {
+            this.events.emit("card:action");
+        });
     }
 
     set category(value: string) {
@@ -41,11 +48,15 @@ export class CardPreview extends Card<IProduct> {
         this.buttonElement.textContent = value;
     }
 
-    disableButton(disabled: boolean) {
-        this.buttonElement.disabled = disabled;
+    set price(value: number | null) {
+        super.price = value;
+        if (value === null) {
+            this.buttonElement.disabled = true;
+            this.buttonElement.textContent = "Недоступно";
+        }
     }
 
-    onButtonClick(callback: () => void) {
-        this.buttonElement.addEventListener("click", callback);
+    set buttonDisabled(disabled: boolean) {
+        this.buttonElement.disabled = disabled;
     }
 }

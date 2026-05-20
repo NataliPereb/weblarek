@@ -1,4 +1,5 @@
-import { Component } from "./Component";
+import { Component } from "../../base/Component";
+import { ensureElement } from "../../../utils/utils";
 
 interface IModal {
     catalogElement: HTMLElement[];
@@ -10,12 +11,11 @@ export class Modal extends Component<IModal> {
 
     constructor(container: HTMLElement) {
         super(container);
-        this.closeButtonModal = container.querySelector(
+        this.closeButtonModal = ensureElement(
             ".modal__close",
+            container,
         ) as HTMLButtonElement;
-        this.modalContent = container.querySelector(
-            ".modal__content",
-        ) as HTMLElement;
+        this.modalContent = ensureElement(".modal__content", container);
         this.closeButtonModal.addEventListener("click", () => this.close());
         this.container.addEventListener("click", (event) => {
             if (event.target === this.container) {
@@ -26,12 +26,10 @@ export class Modal extends Component<IModal> {
 
     open() {
         this.container.classList.add("modal_active");
-        document.body.style.overflow = "hidden";
     }
 
     close() {
         this.container.classList.remove("modal_active");
-        document.body.style.overflow = "";
         this.modalContent.innerHTML = "";
     }
 

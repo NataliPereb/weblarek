@@ -1,19 +1,21 @@
-import { Card } from "../base/Card";
+import { Card } from "./base/Card";
 import { IProduct } from "../../types/index";
 import { categoryMap } from "../../utils/constants";
+import { ensureElement } from "../../utils/utils";
 
 export class CardCatalog extends Card<IProduct> {
     protected categoryElement: HTMLElement;
     protected imageElement: HTMLImageElement;
 
-    constructor(container: HTMLElement) {
+    constructor(container: HTMLElement, onClick: () => void) {
         super(container);
-        this.categoryElement = container.querySelector(
-            ".card__category",
-        ) as HTMLElement;
-        this.imageElement = container.querySelector(
+        this.categoryElement = ensureElement(".card__category", container);
+        this.imageElement = ensureElement(
             ".card__image",
+            container,
         ) as HTMLImageElement;
+
+        container.addEventListener("click", onClick);
     }
 
     set category(value: string) {
@@ -25,7 +27,6 @@ export class CardCatalog extends Card<IProduct> {
     }
 
     set image(value: string) {
-        console.log("Image URL:", value);
         this.setImage(this.imageElement, value);
     }
 }

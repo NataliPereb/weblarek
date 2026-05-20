@@ -1,25 +1,36 @@
 import { Component } from "../base/Component";
+import { ensureElement } from "../../utils/utils";
+import { EventEmitter } from "../base/Events";
 
-export class SuccessView extends Component<{}> {
+interface ISuccessView {
+    totalSpent: number;
+}
+
+export class SuccessView extends Component<ISuccessView> {
     protected descriptionElement: HTMLElement;
     protected closeButton: HTMLButtonElement;
 
-    constructor(container: HTMLElement) {
+    constructor(
+        container: HTMLElement,
+        protected events: EventEmitter,
+    ) {
         super(container);
 
-        this.descriptionElement = container.querySelector(
+        this.descriptionElement = ensureElement(
             ".order-success__description",
-        ) as HTMLElement;
-        this.closeButton = container.querySelector(
+            container,
+        );
+        this.closeButton = ensureElement(
             ".order-success__close",
+            container,
         ) as HTMLButtonElement;
+
+        this.closeButton.addEventListener("click", () => {
+            this.events.emit("success:close");
+        });
     }
 
     set totalSpent(value: number) {
         this.descriptionElement.textContent = `Списано ${value} синапсов`;
-    }
-
-    onClose(callback: () => void) {
-        this.closeButton.addEventListener("click", callback);
     }
 }

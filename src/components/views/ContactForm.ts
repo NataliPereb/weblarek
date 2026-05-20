@@ -1,31 +1,35 @@
-import { Form } from "../base/Form";
-import { IContactsForm } from "../../types";
+import { Form } from "./base/Form";
+import { TContactsForm } from "../../types";
 import { EventEmitter } from "../base/Events";
+import { ensureElement } from "../../utils/utils";
 
-export class ContactsForm extends Form<IContactsForm> {
+export class ContactsForm extends Form<TContactsForm> {
     protected emailElement: HTMLInputElement;
     protected phoneElement: HTMLInputElement;
 
     constructor(container: HTMLElement, events: EventEmitter) {
         super(container, events);
 
-        this.emailElement = container.querySelector(
+        this.emailElement = ensureElement(
             'input[name="email"]',
+            container,
         ) as HTMLInputElement;
-        this.phoneElement = container.querySelector(
+        this.phoneElement = ensureElement(
             'input[name="phone"]',
+            container,
         ) as HTMLInputElement;
 
-        const update = () => this.setButtonDisabled(!this.isValid());
-
-        this.emailElement.addEventListener("input", update);
-        this.phoneElement.addEventListener("input", update);
+        this.container.addEventListener("submit", (e) => {
+            e.preventDefault();
+            events.emit("contacts:submit");
+        });
     }
 
-    protected isValid(): boolean {
-        return (
-            this.emailElement.value.trim() !== "" &&
-            this.phoneElement.value.trim() !== ""
-        );
+    set valid(value: boolean) {
+        this.submitButton.disabled = !value;
+    }
+
+    set error(value: string) {
+        this.errorsContainer.textContent = value;
     }
 }

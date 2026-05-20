@@ -1,26 +1,37 @@
 import { Component } from "../base/Component";
+import { ensureElement } from "../../utils/utils";
+import { EventEmitter } from "../base/Events";
 
-export class BasketView extends Component<{}> {
+interface IBasketView {
+    items: HTMLElement[];
+    buttonDisabled: boolean;
+    totalPrice: number;
+}
+
+export class BasketView extends Component<IBasketView> {
     protected listElement: HTMLElement;
     protected buttonElement: HTMLButtonElement;
     protected priceElement: HTMLElement;
 
-    constructor(container: HTMLElement) {
+    constructor(
+        container: HTMLElement,
+        protected events: EventEmitter,
+    ) {
         super(container);
-        this.listElement = container.querySelector(
-            ".basket__list",
-        ) as HTMLElement;
-        this.buttonElement = container.querySelector(
+        this.listElement = ensureElement(".basket__list", container);
+        this.buttonElement = ensureElement(
             ".basket__button",
+            container,
         ) as HTMLButtonElement;
-        this.priceElement = container.querySelector(
-            ".basket__price",
-        ) as HTMLElement;
+        this.priceElement = ensureElement(".basket__price", container);
+
+        this.buttonElement.addEventListener("click", () => {
+            this.events.emit("basket:order");
+        });
     }
 
     set items(items: HTMLElement[]) {
-        this.listElement.innerHTML = "";
-        this.listElement.append(...items);
+        this.listElement.replaceChildren(...items);
     }
 
     set buttonDisabled(disabled: boolean) {
@@ -29,19 +40,5 @@ export class BasketView extends Component<{}> {
 
     set totalPrice(value: number) {
         this.priceElement.textContent = `${value} синапсов`;
-    }
-
-    onOrderClick(callback: () => void) {
-        this.buttonElement.addEventListener("click", callback);
-    }
-
-    set isEmpty(value: boolean) {
-        if (value) {
-            this.listElement.innerHTML =
-                '<p class="basket__empty">Корзина пуста</p>';
-            this.buttonElement.disabled = true;
-        } else {
-            this.buttonElement.disabled = false;
-        }
     }
 }

@@ -7,6 +7,7 @@ export class BuyerModel {
     private _phone: string;
     private _email: string;
     protected events: EventEmitter;
+
     constructor(events: EventEmitter) {
         this._address = "";
         this._email = "";
@@ -19,13 +20,13 @@ export class BuyerModel {
         if (field === "payment") {
             this._payment = value as TPayment;
         } else if (field === "email") {
-            this._email = value as string;
+            this._email = value;
         } else if (field === "address") {
-            this._address = value as string;
+            this._address = value;
         } else if (field === "phone") {
-            this._phone = value as string;
+            this._phone = value;
         }
-        this.events.emit("buyerUpdate", this.getData());
+        this.events.emit("buyerUpdate");
     }
 
     getData(): IBuyer {
@@ -42,7 +43,7 @@ export class BuyerModel {
         this._address = "";
         this._phone = "";
         this._email = "";
-        this.events.emit("buyerUpdate", this.getData());
+        this.events.emit("buyerUpdate");
     }
 
     validateAll(): TBuyerErrors {

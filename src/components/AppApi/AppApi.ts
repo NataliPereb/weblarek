@@ -1,6 +1,9 @@
-import { IOrder, IOrderResult, IProductsResponse } from "../../types/index";
-import { IApi } from "../../types/index";
-import { CDN_URL } from "../../utils/constants";
+import {
+    IOrder,
+    IOrderResult,
+    IProductsResponse,
+    IApi,
+} from "../../types/index";
 
 export class AppApi {
     private _baseApi: IApi;
@@ -10,12 +13,7 @@ export class AppApi {
     }
 
     getProducts(): Promise<IProductsResponse> {
-        return this._baseApi.get<IProductsResponse>("/product/").then((res) => {
-            res.items.forEach((item) => {
-                item.image = CDN_URL + item.image;
-            });
-            return res;
-        });
+        return this._baseApi.get<IProductsResponse>("/product/");
     }
 
     postOrder(order: IOrder): Promise<IOrderResult> {

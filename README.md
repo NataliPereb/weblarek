@@ -322,17 +322,23 @@ export interface IProductsResponse {
 
 **Поля:**
 
+- `categoryElement: HTMLElement` — элемент с категорией
+- `imageElement: HTMLImageElement` — элемент с изображением
 - `descriptionElement: HTMLElement` — элемент с описанием
 - `buttonElement: HTMLButtonElement` — кнопка действия
 
 **Сеттеры:**
 
+- `category: string` — устанавливает категорию и CSS-модификатор
+- `image: string` — устанавливает изображение
 - `description: string` — устанавливает описание
 - `buttonText: string` — устанавливает текст кнопки
+- `buttonDisabled: boolean` — блокирует/разблокирует кнопку
+- `price: number | null` — переопределён: при `null` блокирует кнопку
 
-**Методы:**
+**События:**
 
-- `onButtonClick(callback: () => void)` — устанавливает обработчик на кнопку
+- `card:action` — при клике на кнопку
 
 ---
 
@@ -377,7 +383,7 @@ export interface IProductsResponse {
 
 ---
 
-### Компонент `OrderForm` (наследует `Form<IOrderForm>`)
+### Компонент `OrderForm` (наследует `Form<TOrderForm>`)
 
 **Назначение:** Форма заказа (способ оплаты + адрес).
 
@@ -386,14 +392,20 @@ export interface IProductsResponse {
 - `cardButton: HTMLButtonElement` — кнопка оплаты картой
 - `cashButton: HTMLButtonElement` — кнопка оплаты наличными
 
-**Методы:**
+**Сеттеры:**
 
-- `isValid(): boolean` — переопределён: проверяет выбран ли способ оплаты и заполнен ли адрес
-- `getData(): IOrderForm` — возвращает `{ payment, address }`
+- `valid: boolean` — блокирует/разблокирует кнопку отправки
+- `error: string` — устанавливает текст ошибки
+- `activePayment: "card" | "cash" | null` — устанавливает активную кнопку оплаты
+
+**События:**
+
+- `order:change` — при выборе способа оплаты
+- `order:submit` — при отправке формы
 
 ---
 
-### Компонент `ContactsForm` (наследует `Form<IContactsForm>`)
+### Компонент `ContactsForm` (наследует `Form<TContactsForm>`)
 
 **Назначение:** Форма контактов (email + телефон).
 
@@ -402,9 +414,14 @@ export interface IProductsResponse {
 - `emailElement: HTMLInputElement`
 - `phoneElement: HTMLInputElement`
 
-**Методы:**
+**Сеттеры:**
 
-- `isValid(): boolean` — переопределён: проверяет что оба поля заполнены
+- `valid: boolean` — блокирует/разблокирует кнопку отправки
+- `error: string` — устанавливает текст ошибки
+
+**События:**
+
+- `contacts:submit` — при отправке формы
 
 ---
 
@@ -422,11 +439,11 @@ export interface IProductsResponse {
 
 - `items: HTMLElement[]` — устанавливает список карточек
 - `totalPrice: number` — устанавливает общую сумму
-- `isEmpty: boolean` — блокирует кнопку и показывает «Корзина пуста»
+- `buttonDisabled: boolean` — блокирует/разблокирует кнопку
 
-**Методы:**
+**События:**
 
-- `onOrderClick(callback: () => void)` — устанавливает обработчик на кнопку
+- `basket:order` — при клике на кнопку «Оформить»
 
 ---
 
@@ -443,9 +460,9 @@ export interface IProductsResponse {
 
 - `counter: number` — устанавливает количество товаров в корзине
 
-**Методы:**
+**События:**
 
-- `onBasketClick(callback: () => void)` — устанавливает обработчик на иконку корзины
+- `basket:open` — при клике на иконку корзины
 
 ---
 
@@ -464,6 +481,22 @@ export interface IProductsResponse {
 - `close()` — закрывает модальное окно
 - `setContent(content: HTMLElement)` — устанавливает содержимое
 
+---
+
+### Компонент `Gallery`
+
+**Назначение:** Отображение галереи товаров.
+
+**Поля:**
+
+- `container: HTMLElement` — корневой элемент галереи
+
+**Сеттеры:**
+
+- `items: HTMLElement[]` — устанавливает список карточек
+
+---
+
 ## События приложения
 
 Все события передаются через `EventEmitter`.
@@ -478,13 +511,17 @@ export interface IProductsResponse {
 
 ### События от View
 
-| Событие           | Данные           | Описание                                    |
-| ----------------- | ---------------- | ------------------------------------------- |
-| `card:select`     | `{ id: string }` | Пользователь кликнул по карточке в каталоге |
-| `basket:open`     | `void`           | Открытие корзины                            |
-| `order:submit`    | `IOrderForm`     | Отправка формы заказа                       |
-| `contacts:submit` | `IContactsForm`  | Отправка формы контактов                    |
-| `form:changed`    | `T`              | Изменение любого поля в форме               |
+| Событие           | Данные                            | Описание                     |
+| ----------------- | --------------------------------- | ---------------------------- |
+| `card:select`     | `{ id: string }`                  | Клик по карточке в каталоге  |
+| `card:action`     | `void`                            | Клик по кнопке в CardPreview |
+| `basket:open`     | `void`                            | Клик по корзине в шапке      |
+| `basket:order`    | `void`                            | Клик «Оформить» в корзине    |
+| `order:change`    | `{ payment: "card" \| "cash" }`   | Выбор способа оплаты         |
+| `order:submit`    | `void`                            | Отправка формы заказа        |
+| `contacts:submit` | `void`                            | Отправка формы контактов     |
+| `form.changed`    | `{ name: string; value: string }` | Изменение любого поля ввода  |
+| `success:close`   | `void`                            | Закрытие модалки успеха      |
 
 ## Презентер (main.ts)
 
@@ -496,10 +533,17 @@ export interface IProductsResponse {
 
 ### Основные обработчики событий:
 
-| Событие         | Действие                                                                |
-| --------------- | ----------------------------------------------------------------------- |
-| `catalogUpdate` | Отрисовка каталога                                                      |
-| `basketUpdate`  | Обновление счётчика в шапке                                             |
-| `card:select`   | Открытие модалки с карточкой товара                                     |
-| `basket:open`   | Открытие корзины с актуальным списком                                   |
-| `submit`        | Сохранение данных формы и переход к следующему шагу или отправка заказа |
+| Событие                 | Действие                                          |
+| ----------------------- | ------------------------------------------------- |
+| `catalogUpdate`         | Отрисовка каталога через `Gallery`                |
+| `basketUpdate`          | Обновление счётчика в шапке и содержимого корзины |
+| `selectedProductUpdate` | Открытие модалки с карточкой товара               |
+| `card:select`           | Сохранение выбранного товара в модель             |
+| `card:action`           | Добавление/удаление товара из корзины             |
+| `basket:open`           | Открытие корзины                                  |
+| `basket:order`          | Открытие формы заказа                             |
+| `order:change`          | Сохранение способа оплаты и обновление валидации  |
+| `form.changed`          | Сохранение данных полей и обновление валидации    |
+| `order:submit`          | Валидация и переход к форме контактов             |
+| `contacts:submit`       | Валидация и отправка заказа                       |
+| `success:close`         | Закрытие модалки успеха                           |

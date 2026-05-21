@@ -9,10 +9,10 @@ export class CardBasket extends Card<IProduct> {
     constructor(container: HTMLElement, onDelete: () => void) {
         super(container);
         this.indexElement = ensureElement(".basket__item-index", container);
-        this.deleteButton = ensureElement(
+        this.deleteButton = ensureElement<HTMLButtonElement>(
             ".basket__item-delete",
             container,
-        ) as HTMLButtonElement;
+        );
 
         this.deleteButton.addEventListener("click", onDelete);
     }

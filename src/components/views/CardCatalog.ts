@@ -10,10 +10,10 @@ export class CardCatalog extends Card<IProduct> {
     constructor(container: HTMLElement, onClick: () => void) {
         super(container);
         this.categoryElement = ensureElement(".card__category", container);
-        this.imageElement = ensureElement(
+        this.imageElement = ensureElement<HTMLImageElement>(
             ".card__image",
             container,
-        ) as HTMLImageElement;
+        );
 
         container.addEventListener("click", onClick);
     }

@@ -10,14 +10,14 @@ export class ContactsForm extends Form<TContactsForm> {
     constructor(container: HTMLElement, events: EventEmitter) {
         super(container, events);
 
-        this.emailElement = ensureElement(
+        this.emailElement = ensureElement<HTMLInputElement>(
             'input[name="email"]',
             container,
-        ) as HTMLInputElement;
-        this.phoneElement = ensureElement(
+        );
+        this.phoneElement = ensureElement<HTMLInputElement>(
             'input[name="phone"]',
             container,
-        ) as HTMLInputElement;
+        );
 
         this.container.addEventListener("submit", (e) => {
             e.preventDefault();
@@ -25,11 +25,11 @@ export class ContactsForm extends Form<TContactsForm> {
         });
     }
 
-    set valid(value: boolean) {
-        this.submitButton.disabled = !value;
+    set email(value: string) {
+        this.emailElement.value = value;
     }
 
-    set error(value: string) {
-        this.errorsContainer.textContent = value;
+    set phone(value: string) {
+        this.phoneElement.value = value;
     }
 }

@@ -6,18 +6,23 @@ import { ensureElement } from "../../utils/utils";
 export class OrderForm extends Form<TOrderForm> {
     protected cardButton: HTMLButtonElement;
     protected cashButton: HTMLButtonElement;
+    protected addressElement: HTMLInputElement;
 
     constructor(container: HTMLElement, events: EventEmitter) {
         super(container, events);
 
-        this.cardButton = ensureElement(
+        this.cardButton = ensureElement<HTMLButtonElement>(
             'button[name="card"]',
             container,
-        ) as HTMLButtonElement;
-        this.cashButton = ensureElement(
+        );
+        this.cashButton = ensureElement<HTMLButtonElement>(
             'button[name="cash"]',
             container,
-        ) as HTMLButtonElement;
+        );
+        this.addressElement = ensureElement<HTMLInputElement>(
+            'input[name="address"]',
+            container,
+        );
 
         this.cardButton.addEventListener("click", () => {
             events.emit("order:change", { payment: "card" });
@@ -32,12 +37,8 @@ export class OrderForm extends Form<TOrderForm> {
         });
     }
 
-    set valid(value: boolean) {
-        this.submitButton.disabled = !value;
-    }
-
-    set error(value: string) {
-        this.errorsContainer.textContent = value;
+    set address(value: string) {
+        this.addressElement.value = value;
     }
 
     set activePayment(value: "card" | "cash" | null) {

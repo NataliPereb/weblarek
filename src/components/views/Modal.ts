@@ -1,5 +1,5 @@
-import { Component } from "../../base/Component";
-import { ensureElement } from "../../../utils/utils";
+import { Component } from "../base/Component";
+import { ensureElement } from "../../utils/utils";
 
 interface IModal {
     catalogElement: HTMLElement[];
@@ -11,10 +11,10 @@ export class Modal extends Component<IModal> {
 
     constructor(container: HTMLElement) {
         super(container);
-        this.closeButtonModal = ensureElement(
+        this.closeButtonModal = ensureElement<HTMLButtonElement>(
             ".modal__close",
             container,
-        ) as HTMLButtonElement;
+        );
         this.modalContent = ensureElement(".modal__content", container);
         this.closeButtonModal.addEventListener("click", () => this.close());
         this.container.addEventListener("click", (event) => {

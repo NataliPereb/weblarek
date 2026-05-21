@@ -19,10 +19,10 @@ export class BasketView extends Component<IBasketView> {
     ) {
         super(container);
         this.listElement = ensureElement(".basket__list", container);
-        this.buttonElement = ensureElement(
+        this.buttonElement = ensureElement<HTMLButtonElement>(
             ".basket__button",
             container,
-        ) as HTMLButtonElement;
+        );
         this.priceElement = ensureElement(".basket__price", container);
 
         this.buttonElement.addEventListener("click", () => {

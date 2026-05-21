@@ -20,10 +20,10 @@ export class SuccessView extends Component<ISuccessView> {
             ".order-success__description",
             container,
         );
-        this.closeButton = ensureElement(
+        this.closeButton = ensureElement<HTMLButtonElement>(
             ".order-success__close",
             container,
-        ) as HTMLButtonElement;
+        );
 
         this.closeButton.addEventListener("click", () => {
             this.events.emit("success:close");

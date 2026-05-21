@@ -13,10 +13,10 @@ export class Form<T> extends Component<T> {
     ) {
         super(container);
 
-        this.submitButton = ensureElement(
+        this.submitButton = ensureElement<HTMLButtonElement>(
             'button[type="submit"]',
             container,
-        ) as HTMLButtonElement;
+        );
         this.errorsContainer = ensureElement(".form__errors", container);
         this.inputs = Array.from(container.querySelectorAll("input"));
 
@@ -45,5 +45,13 @@ export class Form<T> extends Component<T> {
             }
         }
         return this.container;
+    }
+
+    set valid(value: boolean) {
+        this.submitButton.disabled = !value;
+    }
+
+    set error(value: string) {
+        this.errorsContainer.textContent = value;
     }
 }

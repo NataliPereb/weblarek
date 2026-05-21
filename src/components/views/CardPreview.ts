@@ -16,15 +16,15 @@ export class CardPreview extends Card<IProduct> {
     ) {
         super(container);
         this.categoryElement = ensureElement(".card__category", container);
-        this.imageElement = ensureElement(
+        this.descriptionElement = ensureElement(".card__text", container);
+        this.imageElement = ensureElement<HTMLImageElement>(
             ".card__image",
             container,
-        ) as HTMLImageElement;
-        this.descriptionElement = ensureElement(".card__text", container);
-        this.buttonElement = ensureElement(
+        );
+        this.buttonElement = ensureElement<HTMLButtonElement>(
             ".button",
             container,
-        ) as HTMLButtonElement;
+        );
 
         this.buttonElement.addEventListener("click", () => {
             this.events.emit("card:action");
@@ -46,14 +46,6 @@ export class CardPreview extends Card<IProduct> {
 
     set buttonText(value: string) {
         this.buttonElement.textContent = value;
-    }
-
-    set price(value: number | null) {
-        super.price = value;
-        if (value === null) {
-            this.buttonElement.disabled = true;
-            this.buttonElement.textContent = "Недоступно";
-        }
     }
 
     set buttonDisabled(disabled: boolean) {

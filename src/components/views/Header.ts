@@ -15,10 +15,10 @@ export class Header extends Component<IHeader> {
         protected events: EventEmitter,
     ) {
         super(container);
-        this.basketButton = ensureElement(
+        this.basketButton = ensureElement<HTMLButtonElement>(
             ".header__basket",
             container,
-        ) as HTMLButtonElement;
+        );
         this.counterElement = ensureElement(
             ".header__basket-counter",
             container,
